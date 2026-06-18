@@ -23,13 +23,12 @@ Page({
   },
 
   loadDeviceAndFolders() {
-    const devices = wx.getStorageSync("devices") || [];
-    const device = devices.find((item) => item.id === this.data.deviceId) || null;
+    const device = findDevice(this.data.deviceId);
 
     this.setData({ device });
 
     if (!device) {
-      this.setData({ error: "未找到电脑", folders: [], loading: false });
+      this.setData({ error: "未找到电脑，请返回首页重新选择。", folders: [], loading: false });
       return;
     }
 
@@ -83,13 +82,22 @@ Page({
   },
 
   onUseCurrentFolder() {
-    const device = this.data.device;
+    const device = findDevice(this.data.deviceId);
 
-    if (!device || this.data.opening) {
+    if (this.data.opening) {
       return;
     }
 
-    this.setData({ opening: true });
+    if (!device) {
+      this.setData({ error: "未找到电脑，请返回首页重新选择。" });
+      wx.showToast({
+        title: "未找到电脑",
+        icon: "none",
+      });
+      return;
+    }
+
+    this.setData({ opening: true, device, error: "" });
 
     const devices = wx.getStorageSync("devices") || [];
     const updatedDevices = devices.map((item) =>
@@ -108,7 +116,16 @@ Page({
           opening: false,
           error: error.errMsg || "进入文件夹失败",
         });
+        wx.showToast({
+          title: "进入失败",
+          icon: "none",
+        });
       },
     });
   },
 });
+
+function findDevice(deviceId) {
+  const devices = wx.getStorageSync("devices") || [];
+  return devices.find((item) => item.id === deviceId) || null;
+}

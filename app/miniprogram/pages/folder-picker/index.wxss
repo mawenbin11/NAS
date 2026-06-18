@@ -27,19 +27,28 @@
   word-break: break-all;
 }
 
-.primary-button,
+.folder-action {
+  height: 84rpx;
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1677ff;
+  color: #ffffff;
+  border: 1rpx solid #1677ff;
+  border-radius: 8rpx;
+  font-size: 30rpx;
+  box-sizing: border-box;
+}
+
+.folder-action-disabled {
+  opacity: 0.7;
+}
+
 .secondary-button {
   margin-top: 20rpx;
   border-radius: 8rpx;
   font-size: 30rpx;
-}
-
-.primary-button {
-  background: #1677ff;
-  color: #ffffff;
-}
-
-.secondary-button {
   background: #ffffff;
   color: #344054;
   border: 1rpx solid #d0d5dd;

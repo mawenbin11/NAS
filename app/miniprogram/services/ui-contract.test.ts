@@ -25,7 +25,9 @@ test("folder picker gives feedback while opening the selected folder", () => {
   const wxml = readFileSync("miniprogram/pages/folder-picker/index.wxml", "utf8");
   const js = readFileSync("miniprogram/pages/folder-picker/index.js", "utf8");
 
-  assert.match(wxml, /loading="\{\{opening\}\}"/);
-  assert.match(wxml, /disabled="\{\{opening\}\}"/);
+  assert.match(wxml, /class="folder-action/);
+  assert.match(wxml, /bindtap="onUseCurrentFolder"/);
+  assert.doesNotMatch(wxml, /<button[^>]*bindtap="onUseCurrentFolder"/);
+  assert.match(js, /findDevice\(this\.data\.deviceId\)/);
   assert.match(js, /wx\.redirectTo/);
 });
