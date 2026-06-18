@@ -11,6 +11,8 @@ This first slice provides:
 - Local HTTP server.
 - `GET /health`
 - `GET /devices/current`
+- `POST /media` for photo/video upload.
+- `GET /media` for indexed media listing.
 
 ## Development
 
@@ -32,3 +34,22 @@ Health check:
 http://127.0.0.1:48731/health
 ```
 
+Upload a photo/video:
+
+```http
+POST http://127.0.0.1:48731/media
+Content-Type: application/json
+
+{
+  "originalName": "phone.jpg",
+  "mimeType": "image/jpeg",
+  "contentBase64": "...",
+  "sourceDevice": "iphone"
+}
+```
+
+List uploads:
+
+```text
+http://127.0.0.1:48731/media
+```

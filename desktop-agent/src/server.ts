@@ -2,6 +2,7 @@ import { createServer, type IncomingMessage, type Server, type ServerResponse } 
 import os from "node:os";
 
 import type { AgentConfig } from "./config.js";
+import { createMediaStore } from "./media-store.js";
 
 export type DeviceProfile = {
   deviceId: string;
@@ -36,7 +37,7 @@ export function createAgentServer(
   };
 
   const httpServer = createServer((request, response) => {
-    handleRequest(config, deviceProfile, request, response);
+    void handleRequest(config, deviceProfile, request, response);
   });
 
   return {
@@ -57,13 +58,14 @@ export function createAgentServer(
   };
 }
 
-function handleRequest(
+async function handleRequest(
   config: AgentConfig,
   deviceProfile: DeviceProfile,
   request: IncomingMessage,
   response: ServerResponse,
-): void {
+): Promise<void> {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
+  const mediaStore = createMediaStore(config);
 
   if (request.method === "GET" && url.pathname === "/health") {
     sendJson(response, 200, {
@@ -79,7 +81,60 @@ function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/media") {
+    const items = await mediaStore.listMedia();
+    sendJson(response, 200, { items });
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/media") {
+    try {
+      const upload = await readJsonBody<MediaUploadRequest>(request);
+      validateMediaUpload(upload);
+      const record = await mediaStore.saveMedia({
+        originalName: upload.originalName,
+        mimeType: upload.mimeType,
+        content: Buffer.from(upload.contentBase64, "base64"),
+        uploadedAt: upload.uploadedAt ? new Date(upload.uploadedAt) : new Date(),
+        sourceDevice: upload.sourceDevice,
+      });
+
+      sendJson(response, 201, record);
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "Invalid media upload",
+      });
+    }
+    return;
+  }
+
   sendJson(response, 404, { error: "Not found" });
+}
+
+type MediaUploadRequest = {
+  originalName: string;
+  mimeType: string;
+  contentBase64: string;
+  sourceDevice: string;
+  uploadedAt?: string;
+};
+
+function validateMediaUpload(upload: Partial<MediaUploadRequest>): asserts upload is MediaUploadRequest {
+  if (!upload.originalName) {
+    throw new Error("originalName is required");
+  }
+
+  if (!upload.mimeType) {
+    throw new Error("mimeType is required");
+  }
+
+  if (!upload.contentBase64) {
+    throw new Error("contentBase64 is required");
+  }
+
+  if (!upload.sourceDevice) {
+    throw new Error("sourceDevice is required");
+  }
 }
 
 function sendJson(response: ServerResponse, statusCode: number, body: unknown): void {
@@ -87,6 +142,24 @@ function sendJson(response: ServerResponse, statusCode: number, body: unknown): 
     "content-type": "application/json; charset=utf-8",
   });
   response.end(JSON.stringify(body));
+}
+
+function readJsonBody<T>(request: IncomingMessage): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+
+    request.on("data", (chunk: Buffer) => {
+      chunks.push(chunk);
+    });
+    request.on("end", () => {
+      try {
+        resolve(JSON.parse(Buffer.concat(chunks).toString("utf8")) as T);
+      } catch (error) {
+        reject(error);
+      }
+    });
+    request.on("error", reject);
+  });
 }
 
 function stopServer(server: Server): Promise<void> {
