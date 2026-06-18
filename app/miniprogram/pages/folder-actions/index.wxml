@@ -3,7 +3,7 @@
     <view class="title">{{device ? device.name : '当前电脑'}}</view>
     <view class="meta">{{device ? device.baseUrl : ''}}</view>
     <view class="meta">当前文件夹：{{folder || '/'}}</view>
-    <button class="secondary-button" bindtap="onChooseFolder">选择/切换文件夹</button>
+    <button class="secondary-button" bindtap="onChooseFolder">从主文件夹选择</button>
   </view>
 
   <view class="section">
@@ -31,6 +31,16 @@
     <view class="mode-tab {{previewMode === 'small' ? 'mode-tab-active' : ''}}" data-mode="small" bindtap="onChangePreviewMode">小</view>
     <view class="mode-tab {{previewMode === 'medium' ? 'mode-tab-active' : ''}}" data-mode="medium" bindtap="onChangePreviewMode">中</view>
     <view class="mode-tab {{previewMode === 'large' ? 'mode-tab-active' : ''}}" data-mode="large" bindtap="onChangePreviewMode">大</view>
+  </view>
+
+  <view class="sort-section">
+    <view class="sort-label">排序</view>
+    <view class="sort-grid">
+      <view class="sort-tab {{sortMode === 'time-desc' ? 'sort-tab-active' : ''}}" data-sort="time-desc" bindtap="onChangeSortMode">时间新</view>
+      <view class="sort-tab {{sortMode === 'time-asc' ? 'sort-tab-active' : ''}}" data-sort="time-asc" bindtap="onChangeSortMode">时间旧</view>
+      <view class="sort-tab {{sortMode === 'size-desc' ? 'sort-tab-active' : ''}}" data-sort="size-desc" bindtap="onChangeSortMode">文件大</view>
+      <view class="sort-tab {{sortMode === 'size-asc' ? 'sort-tab-active' : ''}}" data-sort="size-asc" bindtap="onChangeSortMode">文件小</view>
+    </view>
   </view>
 
   <view wx:if="{{loading}}" class="empty">资料加载中...</view>

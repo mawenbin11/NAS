@@ -5,7 +5,7 @@ import test from "node:test";
 test("folder actions page exposes folder switching and preview mode tabs", () => {
   const wxml = readFileSync("miniprogram/pages/folder-actions/index.wxml", "utf8");
 
-  assert.match(wxml, /选择\/切换文件夹/);
+  assert.match(wxml, /从主文件夹选择/);
   assert.match(wxml, /wx:if="\{\{loading\}\}"/);
   assert.match(wxml, /class="mode-tab/);
   assert.match(wxml, /data-mode="small"[^>]*>小/);
@@ -38,4 +38,14 @@ test("device page opens an online computer workspace directly", () => {
 
   assert.match(js, /folderActionsUrl/);
   assert.doesNotMatch(js, /folderPickerUrl/);
+});
+
+test("folder actions opens folder picker from the root folder", () => {
+  const js = readFileSync("miniprogram/pages/folder-actions/index.js", "utf8");
+  const wxml = readFileSync("miniprogram/pages/folder-actions/index.wxml", "utf8");
+
+  assert.match(js, /folderPickerUrl\(device\.id, "\/"\)/);
+  assert.match(wxml, /排序/);
+  assert.match(wxml, /data-sort="time-desc"/);
+  assert.match(wxml, /data-sort="size-desc"/);
 });

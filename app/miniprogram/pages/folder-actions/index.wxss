@@ -118,6 +118,22 @@
   margin-bottom: 20rpx;
 }
 
+.sort-section {
+  margin-bottom: 20rpx;
+}
+
+.sort-label {
+  margin-bottom: 10rpx;
+  color: #667085;
+  font-size: 24rpx;
+}
+
+.sort-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10rpx;
+}
+
 .mode-tab {
   height: 72rpx;
   display: flex;
@@ -135,6 +151,25 @@
   background: #1677ff;
   color: #ffffff;
   border-color: #1677ff;
+}
+
+.sort-tab {
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #344054;
+  border: 1rpx solid #d0d5dd;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  box-sizing: border-box;
+}
+
+.sort-tab-active {
+  background: #ecfdf3;
+  color: #027a48;
+  border-color: #12b76a;
 }
 
 .item {

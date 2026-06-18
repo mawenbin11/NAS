@@ -1,4 +1,4 @@
-const { buildLibraryItems } = require("../../services/library-view");
+const { buildLibraryItems, sortLibraryItems } = require("../../services/library-view");
 const { findDeviceById } = require("../../services/device-store");
 const { listMedia, uploadMediaBase64 } = require("../../services/media-client");
 const { folderPickerUrl, mediaDetailUrl } = require("../../services/flow-routes");
@@ -17,6 +17,7 @@ Page({
     previewName: "",
     selectedFile: null,
     previewMode: "large",
+    sortMode: "time-desc",
     items: [],
   },
 
@@ -59,7 +60,7 @@ Page({
         this.setData({
           loading: false,
           device,
-          items: buildLibraryItems(device.baseUrl, items),
+          items: sortLibraryItems(buildLibraryItems(device.baseUrl, items), this.data.sortMode),
           error: "",
         });
       })
@@ -126,7 +127,7 @@ Page({
     }
 
     wx.navigateTo({
-      url: folderPickerUrl(device.id, this.data.folder || device.targetFolder || "/"),
+      url: folderPickerUrl(device.id, "/"),
     });
   },
 
@@ -225,6 +226,19 @@ Page({
     }
 
     this.setData({ previewMode: mode });
+  },
+
+  onChangeSortMode(event) {
+    const sortMode = event.currentTarget.dataset.sort;
+
+    if (!sortMode) {
+      return;
+    }
+
+    this.setData({
+      sortMode,
+      items: sortLibraryItems(this.data.items, sortMode),
+    });
   },
 
   onOpenItem(event) {
