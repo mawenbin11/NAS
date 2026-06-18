@@ -8,6 +8,7 @@ Page({
     folders: [],
     error: "",
     loading: false,
+    opening: false,
   },
 
   onLoad(options) {
@@ -84,9 +85,11 @@ Page({
   onUseCurrentFolder() {
     const device = this.data.device;
 
-    if (!device) {
+    if (!device || this.data.opening) {
       return;
     }
+
+    this.setData({ opening: true });
 
     const devices = wx.getStorageSync("devices") || [];
     const updatedDevices = devices.map((item) =>
@@ -98,8 +101,14 @@ Page({
     wx.setStorageSync("agentBaseUrl", device.baseUrl);
     wx.setStorageSync("targetFolder", this.data.currentPath);
 
-    wx.navigateTo({
+    wx.redirectTo({
       url: folderActionsUrl(this.data.deviceId, this.data.currentPath),
+      fail: (error) => {
+        this.setData({
+          opening: false,
+          error: error.errMsg || "进入文件夹失败",
+        });
+      },
     });
   },
 });

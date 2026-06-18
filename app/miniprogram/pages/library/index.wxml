@@ -5,9 +5,9 @@
   </view>
 
   <view class="mode-bar">
-    <button class="mode-button {{previewMode === 'small' ? 'mode-button-active' : ''}}" data-mode="small" bindtap="onChangePreviewMode">小</button>
-    <button class="mode-button {{previewMode === 'medium' ? 'mode-button-active' : ''}}" data-mode="medium" bindtap="onChangePreviewMode">中</button>
-    <button class="mode-button {{previewMode === 'large' ? 'mode-button-active' : ''}}" data-mode="large" bindtap="onChangePreviewMode">大</button>
+    <view class="mode-tab {{previewMode === 'small' ? 'mode-tab-active' : ''}}" data-mode="small" bindtap="onChangePreviewMode">小</view>
+    <view class="mode-tab {{previewMode === 'medium' ? 'mode-tab-active' : ''}}" data-mode="medium" bindtap="onChangePreviewMode">中</view>
+    <view class="mode-tab {{previewMode === 'large' ? 'mode-tab-active' : ''}}" data-mode="large" bindtap="onChangePreviewMode">大</view>
   </view>
 
   <view wx:if="{{error}}" class="error">{{error}}</view>

@@ -2,7 +2,7 @@
   <view class="section">
     <view class="title">{{device ? device.name : '选择文件夹'}}</view>
     <view class="path">{{currentPath}}</view>
-    <button class="primary-button" bindtap="onUseCurrentFolder">使用此文件夹</button>
+    <button class="primary-button" loading="{{opening}}" disabled="{{opening}}" bindtap="onUseCurrentFolder">使用此文件夹</button>
     <button wx:if="{{currentPath !== '/'}}" class="secondary-button" bindtap="onGoParent">返回上一级</button>
   </view>
 

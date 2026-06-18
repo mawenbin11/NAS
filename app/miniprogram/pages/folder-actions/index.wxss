@@ -48,8 +48,7 @@
 
 .confirm-button,
 .cancel-button,
-.refresh-button,
-.mode-button {
+.refresh-button {
   border-radius: 8rpx;
   font-size: 26rpx;
 }
@@ -60,8 +59,7 @@
 }
 
 .cancel-button,
-.refresh-button,
-.mode-button {
+.refresh-button {
   background: #ffffff;
   color: #344054;
   border: 1rpx solid #d0d5dd;
@@ -111,11 +109,20 @@
   margin-bottom: 20rpx;
 }
 
-.mode-button {
-  margin: 0;
+.mode-tab {
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #344054;
+  border: 1rpx solid #d0d5dd;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
 }
 
-.mode-button-active {
+.mode-tab-active {
   background: #1677ff;
   color: #ffffff;
   border-color: #1677ff;

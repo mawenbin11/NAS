@@ -19,16 +19,20 @@
   margin-bottom: 20rpx;
 }
 
-.mode-button {
-  margin: 0;
+.mode-tab {
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 8rpx;
   background: #ffffff;
   color: #344054;
   border: 1rpx solid #d0d5dd;
-  font-size: 26rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
 }
 
-.mode-button-active {
+.mode-tab-active {
   background: #1677ff;
   color: #ffffff;
   border-color: #1677ff;
