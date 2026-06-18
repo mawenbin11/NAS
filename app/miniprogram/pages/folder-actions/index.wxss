@@ -39,6 +39,15 @@
   font-size: 30rpx;
 }
 
+.secondary-button {
+  margin-top: 20rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  background: #ffffff;
+  color: #344054;
+  border: 1rpx solid #d0d5dd;
+}
+
 .actions {
   display: grid;
   grid-template-columns: 1fr 1fr;

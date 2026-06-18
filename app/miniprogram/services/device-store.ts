@@ -49,3 +49,15 @@ export function selectDevice(
 
   return { devices: updatedDevices, currentDevice };
 }
+
+export function findDeviceById(devices: MiniNasDevice[], deviceId: string): MiniNasDevice | null {
+  const candidates = new Set([deviceId]);
+
+  try {
+    candidates.add(decodeURIComponent(deviceId));
+  } catch {
+    // Keep the original id if it is not URL-encoded.
+  }
+
+  return devices.find((device) => candidates.has(device.id) || candidates.has(device.baseUrl)) ?? null;
+}

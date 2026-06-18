@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-test("folder actions page exposes loading state and preview mode tabs", () => {
+test("folder actions page exposes folder switching and preview mode tabs", () => {
   const wxml = readFileSync("miniprogram/pages/folder-actions/index.wxml", "utf8");
 
+  assert.match(wxml, /选择\/切换文件夹/);
   assert.match(wxml, /wx:if="\{\{loading\}\}"/);
   assert.match(wxml, /class="mode-tab/);
   assert.match(wxml, /data-mode="small"[^>]*>小/);
@@ -28,6 +29,13 @@ test("folder picker gives feedback while opening the selected folder", () => {
   assert.match(wxml, /class="folder-action/);
   assert.match(wxml, /bindtap="onUseCurrentFolder"/);
   assert.doesNotMatch(wxml, /<button[^>]*bindtap="onUseCurrentFolder"/);
-  assert.match(js, /findDevice\(this\.data\.deviceId\)/);
+  assert.match(js, /findDeviceById/);
   assert.match(js, /wx\.redirectTo/);
+});
+
+test("device page opens an online computer workspace directly", () => {
+  const js = readFileSync("miniprogram/pages/device/index.js", "utf8");
+
+  assert.match(js, /folderActionsUrl/);
+  assert.doesNotMatch(js, /folderPickerUrl/);
 });

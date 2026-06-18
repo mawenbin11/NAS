@@ -1,4 +1,5 @@
 const { folderActionsUrl } = require("../../services/flow-routes");
+const { findDeviceById } = require("../../services/device-store");
 
 Page({
   data: {
@@ -127,5 +128,5 @@ Page({
 
 function findDevice(deviceId) {
   const devices = wx.getStorageSync("devices") || [];
-  return devices.find((item) => item.id === deviceId) || null;
+  return findDeviceById(devices, deviceId);
 }

@@ -3,10 +3,11 @@
     <view class="title">{{device ? device.name : '当前电脑'}}</view>
     <view class="meta">{{device ? device.baseUrl : ''}}</view>
     <view class="meta">当前文件夹：{{folder || '/'}}</view>
+    <button class="secondary-button" bindtap="onChooseFolder">选择/切换文件夹</button>
   </view>
 
   <view class="section">
-    <view class="title">上传到此文件夹</view>
+    <view class="title">上传照片/视频</view>
     <view wx:if="{{previewPath}}" class="preview">
       <image wx:if="{{previewType === 'image'}}" class="preview-image" src="{{previewPath}}" mode="aspectFit" />
       <video wx:if="{{previewType === 'video'}}" class="preview-video" src="{{previewPath}}" controls></video>
@@ -22,7 +23,7 @@
   </view>
 
   <view class="toolbar">
-    <view class="title">文件夹资料</view>
+    <view class="title">查看资料</view>
     <button class="refresh-button" loading="{{loading}}" bindtap="loadMedia">刷新</button>
   </view>
 

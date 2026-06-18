@@ -1,6 +1,6 @@
 const { checkAgentHealth } = require("../../services/agent-client");
 const { addOrUpdateDevice, createDevice } = require("../../services/device-store");
-const { folderPickerUrl } = require("../../services/flow-routes");
+const { folderActionsUrl } = require("../../services/flow-routes");
 
 Page({
   data: {
@@ -107,7 +107,7 @@ Page({
     }
 
     wx.navigateTo({
-      url: folderPickerUrl(id, "/"),
+      url: folderActionsUrl(id, device ? device.targetFolder || "/" : "/"),
     });
   },
 });

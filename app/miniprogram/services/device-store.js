@@ -34,8 +34,21 @@ function selectDevice(devices, deviceId, targetFolder) {
   return { devices: updatedDevices, currentDevice };
 }
 
+function findDeviceById(devices, deviceId) {
+  const candidates = new Set([deviceId]);
+
+  try {
+    candidates.add(decodeURIComponent(deviceId));
+  } catch {
+    // Keep the original id if it is not URL-encoded.
+  }
+
+  return devices.find((device) => candidates.has(device.id) || candidates.has(device.baseUrl)) || null;
+}
+
 module.exports = {
   addOrUpdateDevice,
   createDevice,
+  findDeviceById,
   selectDevice,
 };

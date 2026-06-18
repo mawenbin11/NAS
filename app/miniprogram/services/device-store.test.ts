@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { addOrUpdateDevice, createDevice, selectDevice } from "./device-store.js";
+import { addOrUpdateDevice, createDevice, findDeviceById, selectDevice } from "./device-store.js";
 
 test("createDevice normalizes base URL and defaults target folder", () => {
   const device = createDevice({
@@ -34,4 +34,10 @@ test("selectDevice updates only the selected device target folder", () => {
   assert.equal(selected.currentDevice?.id, second.id);
   assert.equal(selected.devices[0]?.targetFolder, "/");
   assert.equal(selected.devices[1]?.targetFolder, "/Work");
+});
+
+test("findDeviceById resolves encoded device URL ids", () => {
+  const device = createDevice({ name: "Home", baseUrl: "127.0.0.1:48731" });
+
+  assert.equal(findDeviceById([device], "http%3A%2F%2F127.0.0.1%3A48731")?.id, device.id);
 });

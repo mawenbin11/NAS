@@ -1,6 +1,7 @@
 const { buildLibraryItems } = require("../../services/library-view");
+const { findDeviceById } = require("../../services/device-store");
 const { listMedia, uploadMediaBase64 } = require("../../services/media-client");
-const { mediaDetailUrl } = require("../../services/flow-routes");
+const { folderPickerUrl, mediaDetailUrl } = require("../../services/flow-routes");
 
 Page({
   data: {
@@ -33,7 +34,7 @@ Page({
 
   loadDevice() {
     const devices = wx.getStorageSync("devices") || [];
-    const device = devices.find((item) => item.id === this.data.deviceId) || null;
+    const device = findDeviceById(devices, this.data.deviceId);
 
     this.setData({ device });
     return device;
@@ -110,6 +111,22 @@ Page({
           message: "",
         });
       },
+    });
+  },
+
+  onChooseFolder() {
+    const device = this.data.device || findDevice(this.data.deviceId);
+
+    if (!device) {
+      this.setData({
+        error: "请从首页重新选择在线电脑",
+        message: "",
+      });
+      return;
+    }
+
+    wx.navigateTo({
+      url: folderPickerUrl(device.id, this.data.folder || device.targetFolder || "/"),
     });
   },
 
@@ -225,7 +242,7 @@ Page({
 
 function findDevice(deviceId) {
   const devices = wx.getStorageSync("devices") || [];
-  return devices.find((item) => item.id === deviceId) || null;
+  return findDeviceById(devices, deviceId);
 }
 
 function detectMimeType(filePath, fileType) {
