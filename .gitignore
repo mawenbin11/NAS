@@ -1,0 +1,23 @@
+node_modules/
+dist/
+build/
+coverage/
+*.log
+*.tmp
+
+# Local user data and generated metadata
+data/*
+!data/.gitkeep
+!data/.mininas/
+data/.mininas/*
+!data/.mininas/.gitkeep
+
+# Environment and secrets
+.env
+.env.*
+*.local
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
