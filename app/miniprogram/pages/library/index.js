@@ -1,10 +1,12 @@
 const { listMedia } = require("../../services/media-client");
+const { buildLibraryItems } = require("../../services/library-view");
 
 Page({
   data: {
     agentBaseUrl: "",
     loading: false,
     items: [],
+    previewMode: "large",
     error: "",
   },
 
@@ -38,7 +40,7 @@ Page({
       .then((items) => {
         this.setData({
           loading: false,
-          items,
+          items: buildLibraryItems(agentBaseUrl, items),
           error: "",
         });
       })
@@ -49,6 +51,18 @@ Page({
           error: error.message || "加载失败",
         });
       });
+  },
+
+  onChangePreviewMode(event) {
+    const mode = event.currentTarget.dataset.mode;
+
+    if (!mode) {
+      return;
+    }
+
+    this.setData({
+      previewMode: mode,
+    });
   },
 
   onOpenItem(event) {

@@ -33,6 +33,30 @@
   font-size: 30rpx;
 }
 
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18rpx;
+  margin-top: 20rpx;
+}
+
+.confirm-button,
+.cancel-button {
+  border-radius: 8rpx;
+  font-size: 28rpx;
+}
+
+.confirm-button {
+  background: #12b76a;
+  color: #ffffff;
+}
+
+.cancel-button {
+  background: #ffffff;
+  color: #344054;
+  border: 1rpx solid #d0d5dd;
+}
+
 .preview {
   margin-top: 24rpx;
 }

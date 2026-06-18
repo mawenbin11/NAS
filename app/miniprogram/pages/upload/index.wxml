@@ -8,7 +8,11 @@
       <video wx:if="{{previewType === 'video'}}" class="preview-video" src="{{previewPath}}" controls></video>
       <view class="preview-name">{{previewName}}</view>
     </view>
-    <button class="primary-button" loading="{{uploading}}" bindtap="onChooseAndUpload">选择并上传</button>
+    <button class="primary-button" disabled="{{uploading}}" bindtap="onChooseMedia">选择照片/视频</button>
+    <view wx:if="{{previewPath}}" class="actions">
+      <button class="confirm-button" loading="{{uploading}}" bindtap="onConfirmUpload">确认上传</button>
+      <button class="cancel-button" disabled="{{uploading}}" bindtap="onCancelSelection">取消选择</button>
+    </view>
     <view wx:if="{{message}}" class="message">{{message}}</view>
     <view wx:if="{{error}}" class="error">{{error}}</view>
   </view>

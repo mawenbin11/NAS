@@ -9,6 +9,7 @@ Page({
     previewPath: "",
     previewType: "",
     previewName: "",
+    selectedFile: null,
   },
 
   onShow() {
@@ -17,7 +18,7 @@ Page({
     });
   },
 
-  onChooseAndUpload() {
+  onChooseMedia() {
     const agentBaseUrl = this.data.agentBaseUrl;
 
     if (!agentBaseUrl) {
@@ -47,10 +48,10 @@ Page({
           previewPath: filePath,
           previewType,
           previewName: fileName,
-          message: "已选择文件，正在上传...",
+          selectedFile: file,
+          message: "已选择文件，请确认上传。",
           error: "",
         });
-        this.uploadTempFile(agentBaseUrl, file);
       },
       fail: (error) => {
         this.setData({
@@ -58,6 +59,40 @@ Page({
           message: "",
         });
       },
+    });
+  },
+
+  onConfirmUpload() {
+    const agentBaseUrl = this.data.agentBaseUrl;
+    const file = this.data.selectedFile;
+
+    if (!agentBaseUrl) {
+      this.setData({
+        error: "请先在“设备”页检测连接。",
+        message: "",
+      });
+      return;
+    }
+
+    if (!file) {
+      this.setData({
+        error: "请先选择照片或视频。",
+        message: "",
+      });
+      return;
+    }
+
+    this.uploadTempFile(agentBaseUrl, file);
+  },
+
+  onCancelSelection() {
+    this.setData({
+      previewPath: "",
+      previewType: "",
+      previewName: "",
+      selectedFile: null,
+      message: "已取消选择。",
+      error: "",
     });
   },
 
