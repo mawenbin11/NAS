@@ -2,7 +2,9 @@
   <view class="section">
     <view class="title">上传照片/视频</view>
     <view class="subtitle">文件将保存到已连接电脑的 MiniNAS data 目录。</view>
+    <view class="meta">当前电脑：{{deviceName || '未选择'}}</view>
     <view class="meta">电脑地址：{{agentBaseUrl || '未连接'}}</view>
+    <view class="meta">保存文件夹：{{targetFolder || '/'}}</view>
     <view wx:if="{{previewPath}}" class="preview">
       <image wx:if="{{previewType === 'image'}}" class="preview-image" src="{{previewPath}}" mode="aspectFill" />
       <video wx:if="{{previewType === 'video'}}" class="preview-video" src="{{previewPath}}" controls></video>

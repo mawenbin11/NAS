@@ -2,6 +2,7 @@
   min-height: 100vh;
   padding: 24rpx;
   box-sizing: border-box;
+  background: #f6f7f9;
 }
 
 .section {
@@ -13,20 +14,14 @@
 }
 
 .title {
-  font-size: 36rpx;
+  font-size: 34rpx;
   font-weight: 700;
-  line-height: 1.3;
-}
-
-.subtitle {
-  margin-top: 8rpx;
-  color: #667085;
-  font-size: 26rpx;
+  margin-bottom: 18rpx;
 }
 
 .input {
   height: 84rpx;
-  margin-top: 28rpx;
+  margin-top: 18rpx;
   padding: 0 20rpx;
   border: 1rpx solid #d0d5dd;
   border-radius: 8rpx;
@@ -43,51 +38,39 @@
   font-size: 30rpx;
 }
 
-.status-section {
-  min-height: 160rpx;
-}
-
-.status-row {
-  display: flex;
-  align-items: center;
-}
-
-.status-dot {
-  width: 18rpx;
-  height: 18rpx;
-  border-radius: 50%;
-  margin-right: 14rpx;
-}
-
-.status-dot-online {
-  background: #12b76a;
-}
-
-.status-dot-offline {
-  background: #f04438;
-}
-
-.status-text {
-  font-size: 30rpx;
-  font-weight: 600;
-}
-
-.meta {
+.device-card {
+  position: relative;
+  padding: 22rpx;
   margin-top: 18rpx;
-  color: #475467;
+  border: 1rpx solid #e5e7eb;
+  border-radius: 8rpx;
+}
+
+.device-name {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.meta,
+.empty {
+  margin-top: 10rpx;
+  color: #667085;
   font-size: 24rpx;
   word-break: break-all;
+}
+
+.current-badge {
+  display: inline-block;
+  margin-top: 14rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 8rpx;
+  background: #ecfdf3;
+  color: #027a48;
+  font-size: 22rpx;
 }
 
 .error {
   margin-top: 18rpx;
   color: #b42318;
-  font-size: 24rpx;
-  word-break: break-all;
-}
-
-.hint {
-  margin-top: 18rpx;
-  color: #1677ff;
   font-size: 24rpx;
 }

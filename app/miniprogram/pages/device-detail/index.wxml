@@ -1,0 +1,15 @@
+<view class="page">
+  <view wx:if="{{!device}}" class="section">未找到电脑</view>
+  <view wx:else>
+    <view class="section">
+      <view class="title">{{device.name}}</view>
+      <view class="meta">{{device.baseUrl}}</view>
+      <view class="meta">保存文件夹：{{device.targetFolder}}</view>
+      <view class="status">{{statusText}}</view>
+      <button class="primary-button" loading="{{checking}}" bindtap="onCheckConnection">检测连接</button>
+      <button class="secondary-button" bindtap="onSetCurrent">设为当前电脑</button>
+      <button class="secondary-button" bindtap="onChooseFolder">选择保存文件夹</button>
+      <view wx:if="{{error}}" class="error">{{error}}</view>
+    </view>
+  </view>
+</view>

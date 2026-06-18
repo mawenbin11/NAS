@@ -1,0 +1,50 @@
+.page {
+  min-height: 100vh;
+  padding: 24rpx;
+  box-sizing: border-box;
+  background: #f6f7f9;
+}
+
+.section {
+  padding: 28rpx;
+  background: #ffffff;
+  border: 1rpx solid #e5e7eb;
+  border-radius: 8rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.meta,
+.status {
+  margin-top: 14rpx;
+  color: #667085;
+  font-size: 26rpx;
+  word-break: break-all;
+}
+
+.primary-button,
+.secondary-button {
+  margin-top: 20rpx;
+  border-radius: 8rpx;
+  font-size: 30rpx;
+}
+
+.primary-button {
+  background: #1677ff;
+  color: #ffffff;
+}
+
+.secondary-button {
+  background: #ffffff;
+  color: #344054;
+  border: 1rpx solid #d0d5dd;
+}
+
+.error {
+  margin-top: 18rpx;
+  color: #b42318;
+  font-size: 24rpx;
+}

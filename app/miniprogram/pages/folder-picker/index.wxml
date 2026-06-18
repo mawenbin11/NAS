@@ -1,0 +1,17 @@
+<view class="page">
+  <view class="section">
+    <view class="title">当前文件夹</view>
+    <view class="path">{{currentPath}}</view>
+    <button class="primary-button" bindtap="onSelectCurrent">选择此文件夹</button>
+    <button wx:if="{{currentPath !== '/'}}" class="secondary-button" bindtap="onGoParent">返回上一级</button>
+  </view>
+
+  <view class="section">
+    <view class="title">子文件夹</view>
+    <view wx:if="{{folders.length === 0}}" class="empty">没有子文件夹</view>
+    <view wx:for="{{folders}}" wx:key="path" class="folder" data-path="{{item.path}}" bindtap="onOpenFolder">
+      {{item.name}}
+    </view>
+    <view wx:if="{{error}}" class="error">{{error}}</view>
+  </view>
+</view>

@@ -123,6 +123,81 @@ test("GET /media returns indexed uploads", async () => {
   }
 });
 
+test("GET /folders returns child folders inside the data directory", async () => {
+  const projectRoot = mkdtempSync(path.join(tmpdir(), "mininas-"));
+  const config = createAgentConfig({ projectRoot, port: 0 });
+  const server = await createAgentServer(config).start();
+
+  try {
+    await fetch(`${server.url}/folders`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ path: "/Photos" }),
+    });
+    await fetch(`${server.url}/folders`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ path: "/Work" }),
+    });
+
+    const response = await fetch(`${server.url}/folders?path=/`);
+    const body = await response.json();
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(
+      body.folders.map((folder: { name: string }) => folder.name).sort(),
+      ["Photos", "Work"],
+    );
+  } finally {
+    await server.stop();
+  }
+});
+
+test("GET /folders rejects traversal outside the data directory", async () => {
+  const projectRoot = mkdtempSync(path.join(tmpdir(), "mininas-"));
+  const config = createAgentConfig({ projectRoot, port: 0 });
+  const server = await createAgentServer(config).start();
+
+  try {
+    const response = await fetch(`${server.url}/folders?path=../`);
+    const body = await response.json();
+
+    assert.equal(response.status, 400);
+    assert.match(body.error, /outside the MiniNAS data directory/);
+  } finally {
+    await server.stop();
+  }
+});
+
+test("POST /media saves uploads under targetFolder when provided", async () => {
+  const projectRoot = mkdtempSync(path.join(tmpdir(), "mininas-"));
+  const config = createAgentConfig({ projectRoot, port: 0 });
+  const server = await createAgentServer(config).start();
+
+  try {
+    const response = await fetch(`${server.url}/media`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        originalName: "phone.jpg",
+        mimeType: "image/jpeg",
+        contentBase64: Buffer.from("fake image bytes").toString("base64"),
+        sourceDevice: "iphone",
+        uploadedAt: "2026-06-18T03:04:05.000Z",
+        targetFolder: "/Photos/Trip",
+      }),
+    });
+    const body = await response.json();
+
+    assert.equal(response.status, 201);
+    assert.match(body.relativePath, /^Photos[\\/]Trip[\\/].+\.jpg$/);
+  } finally {
+    await server.stop();
+  }
+});
+
 test("GET /media/:id/file streams the stored media file", async () => {
   const projectRoot = mkdtempSync(path.join(tmpdir(), "mininas-"));
   const config = createAgentConfig({ projectRoot, port: 0 });

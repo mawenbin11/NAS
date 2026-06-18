@@ -13,6 +13,7 @@ export type UploadMediaBase64Input = {
   mimeType: string;
   contentBase64: string;
   uploadedAt?: string;
+  targetFolder?: string;
 };
 
 export async function listMedia(baseUrl: string): Promise<MediaItem[]> {

@@ -3,6 +3,8 @@ const { uploadMediaBase64 } = require("../../services/media-client");
 Page({
   data: {
     agentBaseUrl: "",
+    deviceName: "",
+    targetFolder: "/",
     uploading: false,
     message: "",
     error: "",
@@ -13,8 +15,14 @@ Page({
   },
 
   onShow() {
+    const currentDeviceId = wx.getStorageSync("currentDeviceId") || "";
+    const devices = wx.getStorageSync("devices") || [];
+    const currentDevice = devices.find((device) => device.id === currentDeviceId);
+
     this.setData({
-      agentBaseUrl: wx.getStorageSync("agentBaseUrl") || "",
+      agentBaseUrl: currentDevice ? currentDevice.baseUrl : wx.getStorageSync("agentBaseUrl") || "",
+      deviceName: currentDevice ? currentDevice.name : "",
+      targetFolder: currentDevice ? currentDevice.targetFolder : wx.getStorageSync("targetFolder") || "/",
     });
   },
 
@@ -117,6 +125,7 @@ Page({
           mimeType,
           contentBase64: readResult.data,
           uploadedAt: new Date().toISOString(),
+          targetFolder: this.data.targetFolder || "/",
         })
           .then((record) => {
             this.setData({

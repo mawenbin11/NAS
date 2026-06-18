@@ -14,6 +14,7 @@ export type SaveMediaInput = {
   content: Buffer;
   uploadedAt: Date;
   sourceDevice: string;
+  targetFolder?: string;
 };
 
 export type MediaRecord = {
@@ -44,7 +45,9 @@ export function createMediaStore(config: AgentConfig): MediaStore {
 
 async function saveMedia(config: AgentConfig, input: SaveMediaInput): Promise<MediaRecord> {
   const fileType = detectFileType(input.mimeType);
-  const relativeDir = dateDirectory(input.uploadedAt);
+  const relativeDir = input.targetFolder
+    ? normalizeTargetFolder(input.targetFolder)
+    : dateDirectory(input.uploadedAt);
   const extension = safeExtension(input.originalName, input.mimeType);
   const fileName = `${input.uploadedAt.toISOString().replace(/[:.]/g, "-")}-${randomUUID()}${extension}`;
   const relativePath = path.join(relativeDir, fileName);
@@ -217,4 +220,17 @@ function safeExtension(originalName: string, mimeType: string): string {
   }
 
   return "";
+}
+
+function normalizeTargetFolder(targetFolder: string): string {
+  const normalized = targetFolder.replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+
+  if (!normalized) {
+    return "";
+  }
+
+  return normalized
+    .split("/")
+    .filter(Boolean)
+    .join(path.sep);
 }

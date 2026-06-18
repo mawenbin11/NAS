@@ -7,6 +7,7 @@ import path from "node:path";
 import type { AgentConfig } from "./config.js";
 import { resolveStoragePath } from "./config.js";
 import { createMediaStore } from "./media-store.js";
+import { createFolder, listFolders } from "./folder-store.js";
 
 export type DeviceProfile = {
   deviceId: string;
@@ -91,6 +92,31 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/folders") {
+    try {
+      const folders = await listFolders(config, url.searchParams.get("path") ?? "/");
+      sendJson(response, 200, { folders });
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "Invalid folder path",
+      });
+    }
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/folders") {
+    try {
+      const body = await readJsonBody<{ path?: string }>(request);
+      const folder = await createFolder(config, body.path ?? "/");
+      sendJson(response, 201, folder);
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "Invalid folder path",
+      });
+    }
+    return;
+  }
+
   const fileRouteMatch = url.pathname.match(/^\/media\/([^/]+)\/file$/);
   if (request.method === "GET" && fileRouteMatch) {
     const media = await mediaStore.getMedia(decodeURIComponent(fileRouteMatch[1] ?? ""));
@@ -127,6 +153,7 @@ async function handleRequest(
         content: Buffer.from(upload.contentBase64, "base64"),
         uploadedAt: upload.uploadedAt ? new Date(upload.uploadedAt) : new Date(),
         sourceDevice: upload.sourceDevice,
+        targetFolder: upload.targetFolder,
       });
 
       sendJson(response, 201, record);
@@ -147,6 +174,7 @@ type MediaUploadRequest = {
   contentBase64: string;
   sourceDevice: string;
   uploadedAt?: string;
+  targetFolder?: string;
 };
 
 function validateMediaUpload(upload: Partial<MediaUploadRequest>): asserts upload is MediaUploadRequest {

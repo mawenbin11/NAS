@@ -11,7 +11,10 @@ Page({
   },
 
   onShow() {
-    const agentBaseUrl = wx.getStorageSync("agentBaseUrl") || "";
+    const currentDeviceId = wx.getStorageSync("currentDeviceId") || "";
+    const devices = wx.getStorageSync("devices") || [];
+    const currentDevice = devices.find((device) => device.id === currentDeviceId);
+    const agentBaseUrl = currentDevice ? currentDevice.baseUrl : wx.getStorageSync("agentBaseUrl") || "";
 
     this.setData({ agentBaseUrl });
 
