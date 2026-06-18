@@ -1,0 +1,18 @@
+<view class="page">
+  <view class="section">
+    <view class="title">电脑端连接</view>
+    <view class="subtitle">输入运行 desktop-agent 的电脑地址</view>
+    <input class="input" value="{{agentBaseUrl}}" placeholder="例如 192.168.1.10:48731" bindinput="onAgentBaseUrlInput" />
+    <button class="primary-button" loading="{{checking}}" bindtap="onCheckConnection">检测连接</button>
+  </view>
+
+  <view class="section status-section">
+    <view class="status-row">
+      <view class="status-dot {{online ? 'status-dot-online' : 'status-dot-offline'}}"></view>
+      <view class="status-text">{{statusText}}</view>
+    </view>
+    <view wx:if="{{normalizedBaseUrl}}" class="meta">地址：{{normalizedBaseUrl}}</view>
+    <view wx:if="{{dataDir}}" class="meta">资料目录：{{dataDir}}</view>
+    <view wx:if="{{error}}" class="error">{{error}}</view>
+  </view>
+</view>

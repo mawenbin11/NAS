@@ -1,0 +1,87 @@
+.page {
+  min-height: 100vh;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+.section {
+  background: #ffffff;
+  border: 1rpx solid #e5e7eb;
+  border-radius: 8rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.subtitle {
+  margin-top: 8rpx;
+  color: #667085;
+  font-size: 26rpx;
+}
+
+.input {
+  height: 84rpx;
+  margin-top: 28rpx;
+  padding: 0 20rpx;
+  border: 1rpx solid #d0d5dd;
+  border-radius: 8rpx;
+  background: #ffffff;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.primary-button {
+  margin-top: 20rpx;
+  background: #1677ff;
+  color: #ffffff;
+  border-radius: 8rpx;
+  font-size: 30rpx;
+}
+
+.status-section {
+  min-height: 160rpx;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+  margin-right: 14rpx;
+}
+
+.status-dot-online {
+  background: #12b76a;
+}
+
+.status-dot-offline {
+  background: #f04438;
+}
+
+.status-text {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.meta {
+  margin-top: 18rpx;
+  color: #475467;
+  font-size: 24rpx;
+  word-break: break-all;
+}
+
+.error {
+  margin-top: 18rpx;
+  color: #b42318;
+  font-size: 24rpx;
+  word-break: break-all;
+}

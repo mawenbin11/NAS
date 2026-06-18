@@ -16,6 +16,7 @@ data/.mininas/*
 .env
 .env.*
 *.local
+app/project.private.config.json
 
 # OS/editor
 .DS_Store
