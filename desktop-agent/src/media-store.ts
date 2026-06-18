@@ -31,12 +31,14 @@ export type MediaRecord = {
 export type MediaStore = {
   saveMedia: (input: SaveMediaInput) => Promise<MediaRecord>;
   listMedia: () => Promise<MediaRecord[]>;
+  getMedia: (id: string) => Promise<MediaRecord | null>;
 };
 
 export function createMediaStore(config: AgentConfig): MediaStore {
   return {
     saveMedia: (input) => saveMedia(config, input),
     listMedia: () => listMedia(config),
+    getMedia: (id) => getMedia(config, id),
   };
 }
 
@@ -95,6 +97,33 @@ async function listMedia(config: AgentConfig): Promise<MediaRecord[]> {
       .all() as MediaRecord[];
 
     return rows;
+  } finally {
+    database.close();
+  }
+}
+
+async function getMedia(config: AgentConfig, id: string): Promise<MediaRecord | null> {
+  await mkdir(config.metadataDir, { recursive: true });
+  const database = openDatabase(config);
+
+  try {
+    const row = database
+      .prepare(
+        `SELECT id,
+                original_name AS originalName,
+                relative_path AS relativePath,
+                file_type AS fileType,
+                mime_type AS mimeType,
+                size,
+                hash,
+                uploaded_at AS uploadedAt,
+                source_device AS sourceDevice
+           FROM media_files
+          WHERE id = ?`,
+      )
+      .get(id) as MediaRecord | undefined;
+
+    return row ?? null;
   } finally {
     database.close();
   }

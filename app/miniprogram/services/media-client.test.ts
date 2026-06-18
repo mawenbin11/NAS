@@ -3,7 +3,7 @@ import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import test from "node:test";
 
-import { listMedia, uploadMediaBase64 } from "./media-client.js";
+import { listMedia, mediaFileUrl, uploadMediaBase64 } from "./media-client.js";
 
 test("listMedia returns media items from the desktop agent", async () => {
   const server = createServer((request, response) => {
@@ -105,4 +105,11 @@ test("listMedia throws when the desktop agent returns an error", async () => {
       server.close((error) => (error ? reject(error) : resolve()));
     });
   }
+});
+
+test("mediaFileUrl returns the preview URL for a media item", () => {
+  assert.equal(
+    mediaFileUrl("http://127.0.0.1:48731", "file 1"),
+    "http://127.0.0.1:48731/media/file%201/file",
+  );
 });

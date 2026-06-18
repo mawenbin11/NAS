@@ -50,4 +50,16 @@ Page({
         });
       });
   },
+
+  onOpenItem(event) {
+    const id = event.currentTarget.dataset.id;
+
+    if (!id) {
+      return;
+    }
+
+    wx.navigateTo({
+      url: `/pages/media-detail/index?id=${encodeURIComponent(id)}`,
+    });
+  },
 });

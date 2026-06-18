@@ -48,3 +48,7 @@ export async function uploadMediaBase64(
 
   return (await response.json()) as MediaItem;
 }
+
+export function mediaFileUrl(baseUrl: string, mediaId: string): string {
+  return `${baseUrl}/media/${encodeURIComponent(mediaId)}/file`;
+}

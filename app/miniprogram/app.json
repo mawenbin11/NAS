@@ -2,7 +2,8 @@
   "pages": [
     "pages/device/index",
     "pages/upload/index",
-    "pages/library/index"
+    "pages/library/index",
+    "pages/media-detail/index"
   ],
   "window": {
     "navigationBarTitleText": "MiniNAS",

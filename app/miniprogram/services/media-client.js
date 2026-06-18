@@ -15,6 +15,10 @@ function uploadMediaBase64(baseUrl, input) {
   });
 }
 
+function mediaFileUrl(baseUrl, mediaId) {
+  return `${baseUrl}/media/${encodeURIComponent(mediaId)}/file`;
+}
+
 function requestJson(options) {
   return new Promise((resolve, reject) => {
     wx.request({
@@ -41,5 +45,6 @@ function requestJson(options) {
 
 module.exports = {
   listMedia,
+  mediaFileUrl,
   uploadMediaBase64,
 };

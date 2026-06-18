@@ -1,0 +1,15 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="empty">加载中...</view>
+  <view wx:elif="{{error}}" class="error">{{error}}</view>
+  <view wx:else class="content">
+    <image wx:if="{{item.fileType === 'photo'}}" class="media-image" src="{{fileUrl}}" mode="aspectFit" />
+    <video wx:if="{{item.fileType === 'video'}}" class="media-video" src="{{fileUrl}}" controls></video>
+    <view class="section">
+      <view class="title">{{item.originalName}}</view>
+      <view class="meta">类型：{{item.fileType}}</view>
+      <view class="meta">大小：{{item.size}} bytes</view>
+      <view class="meta">时间：{{item.uploadedAt}}</view>
+      <view class="meta">路径：{{item.relativePath}}</view>
+    </view>
+  </view>
+</view>

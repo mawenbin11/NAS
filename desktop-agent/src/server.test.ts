@@ -123,6 +123,55 @@ test("GET /media returns indexed uploads", async () => {
   }
 });
 
+test("GET /media/:id/file streams the stored media file", async () => {
+  const projectRoot = mkdtempSync(path.join(tmpdir(), "mininas-"));
+  const config = createAgentConfig({ projectRoot, port: 0 });
+  const server = await createAgentServer(config).start();
+
+  try {
+    const uploadResponse = await fetch(`${server.url}/media`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        originalName: "phone.jpg",
+        mimeType: "image/jpeg",
+        contentBase64: Buffer.from("fake image bytes").toString("base64"),
+        sourceDevice: "iphone",
+        uploadedAt: "2026-06-18T03:04:05.000Z",
+      }),
+    });
+    const upload = await uploadResponse.json();
+
+    const response = await fetch(`${server.url}/media/${upload.id}/file`);
+    const body = Buffer.from(await response.arrayBuffer()).toString("utf8");
+
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("content-type"), "image/jpeg");
+    assert.match(response.headers.get("content-disposition") ?? "", /phone\.jpg/);
+    assert.equal(body, "fake image bytes");
+  } finally {
+    await server.stop();
+  }
+});
+
+test("GET /media/:id/file returns 404 for missing media", async () => {
+  const projectRoot = mkdtempSync(path.join(tmpdir(), "mininas-"));
+  const config = createAgentConfig({ projectRoot, port: 0 });
+  const server = await createAgentServer(config).start();
+
+  try {
+    const response = await fetch(`${server.url}/media/missing/file`);
+    const body = await response.json();
+
+    assert.equal(response.status, 404);
+    assert.equal(body.error, "Media not found");
+  } finally {
+    await server.stop();
+  }
+});
+
 test("POST /media rejects non-media uploads with 400", async () => {
   const projectRoot = mkdtempSync(path.join(tmpdir(), "mininas-"));
   const config = createAgentConfig({ projectRoot, port: 0 });

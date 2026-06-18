@@ -1,7 +1,11 @@
+import { createReadStream } from "node:fs";
+import { stat } from "node:fs/promises";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import os from "node:os";
+import path from "node:path";
 
 import type { AgentConfig } from "./config.js";
+import { resolveStoragePath } from "./config.js";
 import { createMediaStore } from "./media-store.js";
 
 export type DeviceProfile = {
@@ -84,6 +88,32 @@ async function handleRequest(
   if (request.method === "GET" && url.pathname === "/media") {
     const items = await mediaStore.listMedia();
     sendJson(response, 200, { items });
+    return;
+  }
+
+  const fileRouteMatch = url.pathname.match(/^\/media\/([^/]+)\/file$/);
+  if (request.method === "GET" && fileRouteMatch) {
+    const media = await mediaStore.getMedia(decodeURIComponent(fileRouteMatch[1] ?? ""));
+
+    if (!media) {
+      sendJson(response, 404, { error: "Media not found" });
+      return;
+    }
+
+    const filePath = resolveStoragePath(config, media.relativePath);
+
+    try {
+      await stat(filePath);
+    } catch {
+      sendJson(response, 404, { error: "Media file missing" });
+      return;
+    }
+
+    response.writeHead(200, {
+      "content-type": media.mimeType,
+      "content-disposition": `inline; filename="${path.basename(media.originalName).replace(/"/g, "")}"`,
+    });
+    createReadStream(filePath).pipe(response);
     return;
   }
 

@@ -6,6 +6,9 @@ Page({
     uploading: false,
     message: "",
     error: "",
+    previewPath: "",
+    previewType: "",
+    previewName: "",
   },
 
   onShow() {
@@ -36,6 +39,17 @@ Page({
           return;
         }
 
+        const filePath = file.tempFilePath;
+        const fileName = filePath.split(/[\\/]/).pop() || "media";
+        const previewType = file.fileType === "video" ? "video" : "image";
+
+        this.setData({
+          previewPath: filePath,
+          previewType,
+          previewName: fileName,
+          message: "已选择文件，正在上传...",
+          error: "",
+        });
         this.uploadTempFile(agentBaseUrl, file);
       },
       fail: (error) => {
