@@ -123,6 +123,48 @@ test("GET /media returns indexed uploads", async () => {
   }
 });
 
+test("GET /media filters indexed uploads by folder", async () => {
+  const projectRoot = mkdtempSync(path.join(tmpdir(), "mininas-"));
+  const config = createAgentConfig({ projectRoot, port: 0 });
+  const server = await createAgentServer(config).start();
+
+  try {
+    await fetch(`${server.url}/media`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        originalName: "trip.jpg",
+        mimeType: "image/jpeg",
+        contentBase64: Buffer.from("trip").toString("base64"),
+        sourceDevice: "iphone",
+        uploadedAt: "2026-06-18T03:04:05.000Z",
+        targetFolder: "/Photos",
+      }),
+    });
+    await fetch(`${server.url}/media`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        originalName: "work.jpg",
+        mimeType: "image/jpeg",
+        contentBase64: Buffer.from("work").toString("base64"),
+        sourceDevice: "iphone",
+        uploadedAt: "2026-06-18T03:05:05.000Z",
+        targetFolder: "/Work",
+      }),
+    });
+
+    const response = await fetch(`${server.url}/media?folder=/Photos`);
+    const body = await response.json();
+
+    assert.equal(response.status, 200);
+    assert.equal(body.items.length, 1);
+    assert.equal(body.items[0].originalName, "trip.jpg");
+  } finally {
+    await server.stop();
+  }
+});
+
 test("GET /folders returns child folders inside the data directory", async () => {
   const projectRoot = mkdtempSync(path.join(tmpdir(), "mininas-"));
   const config = createAgentConfig({ projectRoot, port: 0 });

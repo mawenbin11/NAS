@@ -1,9 +1,12 @@
+const { checkAgentHealth } = require("../../services/agent-client");
 const { addOrUpdateDevice, createDevice } = require("../../services/device-store");
+const { folderPickerUrl } = require("../../services/flow-routes");
 
 Page({
   data: {
     devices: [],
-    currentDeviceId: "",
+    onlineById: {},
+    checking: false,
     name: "当前电脑",
     baseUrl: "127.0.0.1:48731",
     error: "",
@@ -11,12 +14,12 @@ Page({
 
   onShow() {
     this.loadDevices();
+    this.refreshDeviceStatuses();
   },
 
   loadDevices() {
     this.setData({
       devices: wx.getStorageSync("devices") || [],
-      currentDeviceId: wx.getStorageSync("currentDeviceId") || "",
     });
   },
 
@@ -37,20 +40,47 @@ Page({
       const devices = addOrUpdateDevice(this.data.devices, device);
 
       wx.setStorageSync("devices", devices);
-      wx.setStorageSync("currentDeviceId", device.id);
-      wx.setStorageSync("agentBaseUrl", device.baseUrl);
-      wx.setStorageSync("targetFolder", device.targetFolder);
 
       this.setData({
         devices,
-        currentDeviceId: device.id,
         error: "",
       });
+      this.refreshDeviceStatuses();
     } catch (error) {
       this.setData({
         error: error.message || "添加失败",
       });
     }
+  },
+
+  refreshDeviceStatuses() {
+    const devices = this.data.devices || [];
+
+    if (devices.length === 0) {
+      this.setData({ onlineById: {}, checking: false });
+      return;
+    }
+
+    this.setData({ checking: true });
+
+    Promise.all(
+      devices.map((device) =>
+        checkAgentHealth(device.baseUrl).then((result) => ({
+          id: device.id,
+          online: result.online,
+        })),
+      ),
+    )
+      .then((results) => {
+        const onlineById = {};
+        results.forEach((result) => {
+          onlineById[result.id] = result.online;
+        });
+        this.setData({ onlineById, checking: false });
+      })
+      .catch(() => {
+        this.setData({ checking: false });
+      });
   },
 
   onOpenDevice(event) {
@@ -60,8 +90,24 @@ Page({
       return;
     }
 
+    if (!this.data.onlineById[id]) {
+      wx.showToast({
+        title: "电脑离线",
+        icon: "none",
+      });
+      return;
+    }
+
+    const device = (this.data.devices || []).find((item) => item.id === id);
+
+    wx.setStorageSync("currentDeviceId", id);
+    if (device) {
+      wx.setStorageSync("agentBaseUrl", device.baseUrl);
+      wx.setStorageSync("targetFolder", device.targetFolder || "/");
+    }
+
     wx.navigateTo({
-      url: `/pages/device-detail/index?id=${encodeURIComponent(id)}`,
+      url: folderPickerUrl(id, "/"),
     });
   },
 });

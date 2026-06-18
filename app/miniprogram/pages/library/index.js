@@ -1,9 +1,11 @@
 const { listMedia } = require("../../services/media-client");
 const { buildLibraryItems } = require("../../services/library-view");
+const { mediaDetailUrl } = require("../../services/flow-routes");
 
 Page({
   data: {
     agentBaseUrl: "",
+    deviceId: "",
     loading: false,
     items: [],
     previewMode: "large",
@@ -16,7 +18,7 @@ Page({
     const currentDevice = devices.find((device) => device.id === currentDeviceId);
     const agentBaseUrl = currentDevice ? currentDevice.baseUrl : wx.getStorageSync("agentBaseUrl") || "";
 
-    this.setData({ agentBaseUrl });
+    this.setData({ agentBaseUrl, deviceId: currentDeviceId });
 
     if (agentBaseUrl) {
       this.loadMedia();
@@ -28,7 +30,7 @@ Page({
 
     if (!agentBaseUrl) {
       this.setData({
-        error: "请先在“设备”页检测连接。",
+        error: "请先在首页选择在线电脑。",
         items: [],
       });
       return;
@@ -76,7 +78,7 @@ Page({
     }
 
     wx.navigateTo({
-      url: `/pages/media-detail/index?id=${encodeURIComponent(id)}`,
+      url: mediaDetailUrl(id, this.data.deviceId),
     });
   },
 });

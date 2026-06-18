@@ -10,7 +10,11 @@ Page({
 
   onLoad(options) {
     const id = options && options.id;
-    const agentBaseUrl = wx.getStorageSync("agentBaseUrl") || "";
+    const folder = (options && options.folder) || "";
+    const deviceId = (options && options.deviceId) || wx.getStorageSync("currentDeviceId") || "";
+    const devices = wx.getStorageSync("devices") || [];
+    const device = devices.find((entry) => entry.id === deviceId) || null;
+    const agentBaseUrl = device ? device.baseUrl : wx.getStorageSync("agentBaseUrl") || "";
 
     if (!id || !agentBaseUrl) {
       this.setData({
@@ -20,7 +24,7 @@ Page({
       return;
     }
 
-    listMedia(agentBaseUrl)
+    listMedia(agentBaseUrl, folder || undefined)
       .then((items) => {
         const item = items.find((entry) => entry.id === id);
 

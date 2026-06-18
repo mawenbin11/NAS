@@ -1,6 +1,28 @@
 <view class="page">
+  <view class="section">
+    <view class="title">{{device ? device.name : '当前电脑'}}</view>
+    <view class="meta">{{device ? device.baseUrl : ''}}</view>
+    <view class="meta">当前文件夹：{{folder || '/'}}</view>
+  </view>
+
+  <view class="section">
+    <view class="title">上传到此文件夹</view>
+    <view wx:if="{{previewPath}}" class="preview">
+      <image wx:if="{{previewType === 'image'}}" class="preview-image" src="{{previewPath}}" mode="aspectFit" />
+      <video wx:if="{{previewType === 'video'}}" class="preview-video" src="{{previewPath}}" controls></video>
+      <view class="preview-name">{{previewName}}</view>
+    </view>
+    <button class="primary-button" disabled="{{uploading}}" bindtap="onChooseMedia">选择照片/视频</button>
+    <view wx:if="{{previewPath}}" class="actions">
+      <button class="confirm-button" loading="{{uploading}}" bindtap="onConfirmUpload">确认上传</button>
+      <button class="cancel-button" disabled="{{uploading}}" bindtap="onCancelSelection">取消</button>
+    </view>
+    <view wx:if="{{message}}" class="message">{{message}}</view>
+    <view wx:if="{{error}}" class="error">{{error}}</view>
+  </view>
+
   <view class="toolbar">
-    <view class="title">最近资料</view>
+    <view class="title">文件夹资料</view>
     <button class="refresh-button" loading="{{loading}}" bindtap="loadMedia">刷新</button>
   </view>
 
@@ -10,8 +32,7 @@
     <button class="mode-button {{previewMode === 'large' ? 'mode-button-active' : ''}}" data-mode="large" bindtap="onChangePreviewMode">大</button>
   </view>
 
-  <view wx:if="{{error}}" class="error">{{error}}</view>
-  <view wx:if="{{!loading && items.length === 0}}" class="empty">暂无资料</view>
+  <view wx:if="{{!loading && items.length === 0}}" class="empty">此文件夹暂无资料</view>
 
   <view class="list">
     <view wx:for="{{items}}" wx:key="id" class="item item-{{previewMode}}" data-id="{{item.id}}" bindtap="onOpenItem">

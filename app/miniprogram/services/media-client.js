@@ -1,6 +1,8 @@
-function listMedia(baseUrl) {
+function listMedia(baseUrl, folder) {
+  const url = folder ? `${baseUrl}/media?folder=${encodeURIComponent(folder)}` : `${baseUrl}/media`;
+
   return requestJson({
-    url: `${baseUrl}/media`,
+    url,
     method: "GET",
   }).then((body) => body.items || []);
 }

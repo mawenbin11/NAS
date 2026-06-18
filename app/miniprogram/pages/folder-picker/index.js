@@ -1,3 +1,5 @@
+const { folderActionsUrl } = require("../../services/flow-routes");
+
 Page({
   data: {
     deviceId: "",
@@ -5,6 +7,7 @@ Page({
     currentPath: "/",
     folders: [],
     error: "",
+    loading: false,
   },
 
   onLoad(options) {
@@ -25,26 +28,37 @@ Page({
     this.setData({ device });
 
     if (!device) {
-      this.setData({ error: "未找到电脑" });
+      this.setData({ error: "未找到电脑", folders: [], loading: false });
       return;
     }
+
+    this.setData({ loading: true, error: "" });
 
     wx.request({
       url: `${device.baseUrl}/folders?path=${encodeURIComponent(this.data.currentPath)}`,
       method: "GET",
       success: (response) => {
         if (response.statusCode !== 200) {
-          this.setData({ error: `加载失败：HTTP ${response.statusCode}` });
+          this.setData({
+            loading: false,
+            folders: [],
+            error: `加载失败：HTTP ${response.statusCode}`,
+          });
           return;
         }
 
         this.setData({
+          loading: false,
           folders: (response.data && response.data.folders) || [],
           error: "",
         });
       },
       fail: (error) => {
-        this.setData({ error: error.errMsg });
+        this.setData({
+          loading: false,
+          folders: [],
+          error: error.errMsg,
+        });
       },
     });
   },
@@ -67,21 +81,25 @@ Page({
     this.loadDeviceAndFolders();
   },
 
-  onSelectCurrent() {
+  onUseCurrentFolder() {
+    const device = this.data.device;
+
+    if (!device) {
+      return;
+    }
+
     const devices = wx.getStorageSync("devices") || [];
-    const updatedDevices = devices.map((device) =>
-      device.id === this.data.deviceId ? { ...device, targetFolder: this.data.currentPath } : device,
+    const updatedDevices = devices.map((item) =>
+      item.id === this.data.deviceId ? { ...item, targetFolder: this.data.currentPath } : item,
     );
-    const selected = updatedDevices.find((device) => device.id === this.data.deviceId);
 
     wx.setStorageSync("devices", updatedDevices);
     wx.setStorageSync("currentDeviceId", this.data.deviceId);
+    wx.setStorageSync("agentBaseUrl", device.baseUrl);
+    wx.setStorageSync("targetFolder", this.data.currentPath);
 
-    if (selected) {
-      wx.setStorageSync("agentBaseUrl", selected.baseUrl);
-      wx.setStorageSync("targetFolder", selected.targetFolder);
-    }
-
-    wx.navigateBack();
+    wx.navigateTo({
+      url: folderActionsUrl(this.data.deviceId, this.data.currentPath),
+    });
   },
 });

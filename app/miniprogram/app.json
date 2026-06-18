@@ -1,11 +1,12 @@
 {
   "pages": [
     "pages/device/index",
-    "pages/upload/index",
+    "pages/folder-picker/index",
+    "pages/folder-actions/index",
     "pages/library/index",
     "pages/media-detail/index",
     "pages/device-detail/index",
-    "pages/folder-picker/index"
+    "pages/upload/index"
   ],
   "window": {
     "navigationBarTitleText": "MiniNAS",
@@ -21,15 +22,11 @@
     "list": [
       {
         "pagePath": "pages/device/index",
-        "text": "设备"
-      },
-      {
-        "pagePath": "pages/upload/index",
-        "text": "上传"
+        "text": "电脑"
       },
       {
         "pagePath": "pages/library/index",
-        "text": "资料"
+        "text": "最近资料"
       }
     ]
   },

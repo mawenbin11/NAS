@@ -7,7 +7,7 @@ import path from "node:path";
 import type { AgentConfig } from "./config.js";
 import { resolveStoragePath } from "./config.js";
 import { createMediaStore } from "./media-store.js";
-import { createFolder, listFolders } from "./folder-store.js";
+import { createFolder, listFolders, normalizeFolderPath } from "./folder-store.js";
 
 export type DeviceProfile = {
   deviceId: string;
@@ -87,7 +87,7 @@ async function handleRequest(
   }
 
   if (request.method === "GET" && url.pathname === "/media") {
-    const items = await mediaStore.listMedia();
+    const items = filterMediaByFolder(await mediaStore.listMedia(), url.searchParams.get("folder") ?? "/");
     sendJson(response, 200, { items });
     return;
   }
@@ -193,6 +193,16 @@ function validateMediaUpload(upload: Partial<MediaUploadRequest>): asserts uploa
   if (!upload.sourceDevice) {
     throw new Error("sourceDevice is required");
   }
+}
+
+function filterMediaByFolder<T extends { relativePath: string }>(items: T[], folderPath: string): T[] {
+  const normalizedFolder = normalizeFolderPath(folderPath).replace(/\\/g, "/");
+
+  if (!normalizedFolder) {
+    return items;
+  }
+
+  return items.filter((item) => item.relativePath.replace(/\\/g, "/").startsWith(`${normalizedFolder}/`));
 }
 
 function sendJson(response: ServerResponse, statusCode: number, body: unknown): void {

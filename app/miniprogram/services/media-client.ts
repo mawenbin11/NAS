@@ -16,8 +16,9 @@ export type UploadMediaBase64Input = {
   targetFolder?: string;
 };
 
-export async function listMedia(baseUrl: string): Promise<MediaItem[]> {
-  const response = await fetch(`${baseUrl}/media`);
+export async function listMedia(baseUrl: string, folder?: string): Promise<MediaItem[]> {
+  const url = folder ? `${baseUrl}/media?folder=${encodeURIComponent(folder)}` : `${baseUrl}/media`;
+  const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);

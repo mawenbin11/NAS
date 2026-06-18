@@ -41,6 +41,26 @@ test("listMedia returns media items from the desktop agent", async () => {
   }
 });
 
+test("listMedia requests media inside a selected folder", async () => {
+  const server = createServer((request, response) => {
+    assert.equal(request.url, "/media?folder=%2FPhotos%2FTrip");
+    response.writeHead(200, { "content-type": "application/json" });
+    response.end(JSON.stringify({ items: [] }));
+  });
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+
+  try {
+    const { port } = server.address() as AddressInfo;
+    const items = await listMedia(`http://127.0.0.1:${port}`, "/Photos/Trip");
+
+    assert.deepEqual(items, []);
+  } finally {
+    await new Promise<void>((resolve, reject) => {
+      server.close((error) => (error ? reject(error) : resolve()));
+    });
+  }
+});
+
 test("uploadMediaBase64 posts a photo payload and returns the created record", async () => {
   const server = createServer((request, response) => {
     assert.equal(request.method, "POST");

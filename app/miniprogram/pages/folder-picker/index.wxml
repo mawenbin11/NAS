@@ -1,16 +1,18 @@
 <view class="page">
   <view class="section">
-    <view class="title">当前文件夹</view>
+    <view class="title">{{device ? device.name : '选择文件夹'}}</view>
     <view class="path">{{currentPath}}</view>
-    <button class="primary-button" bindtap="onSelectCurrent">选择此文件夹</button>
+    <button class="primary-button" bindtap="onUseCurrentFolder">使用此文件夹</button>
     <button wx:if="{{currentPath !== '/'}}" class="secondary-button" bindtap="onGoParent">返回上一级</button>
   </view>
 
   <view class="section">
     <view class="title">子文件夹</view>
-    <view wx:if="{{folders.length === 0}}" class="empty">没有子文件夹</view>
+    <view wx:if="{{loading}}" class="empty">加载中...</view>
+    <view wx:elif="{{folders.length === 0}}" class="empty">没有子文件夹</view>
     <view wx:for="{{folders}}" wx:key="path" class="folder" data-path="{{item.path}}" bindtap="onOpenFolder">
-      {{item.name}}
+      <view class="folder-name">{{item.name}}</view>
+      <view class="folder-path">{{item.path}}</view>
     </view>
     <view wx:if="{{error}}" class="error">{{error}}</view>
   </view>

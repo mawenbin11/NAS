@@ -3,18 +3,23 @@
     <view class="title">添加电脑</view>
     <input class="input" value="{{name}}" placeholder="电脑名称" bindinput="onNameInput" />
     <input class="input" value="{{baseUrl}}" placeholder="例如 192.168.1.10:48731" bindinput="onBaseUrlInput" />
-    <button class="primary-button" bindtap="onAddDevice">添加并设为当前电脑</button>
+    <button class="primary-button" bindtap="onAddDevice">添加电脑</button>
     <view wx:if="{{error}}" class="error">{{error}}</view>
   </view>
 
   <view class="section">
-    <view class="title">电脑列表</view>
+    <view class="section-header">
+      <view class="title">电脑列表</view>
+      <button class="refresh-button" loading="{{checking}}" bindtap="refreshDeviceStatuses">刷新</button>
+    </view>
     <view wx:if="{{devices.length === 0}}" class="empty">暂无电脑，请先添加。</view>
-    <view wx:for="{{devices}}" wx:key="id" class="device-card" data-id="{{item.id}}" bindtap="onOpenDevice">
-      <view class="device-name">{{item.name}}</view>
+    <view wx:for="{{devices}}" wx:key="id" class="device-card {{onlineById[item.id] ? '' : 'device-card-offline'}}" data-id="{{item.id}}" bindtap="onOpenDevice">
+      <view class="device-row">
+        <view class="device-name">{{item.name}}</view>
+        <view class="status-badge {{onlineById[item.id] ? 'status-online' : 'status-offline'}}">{{onlineById[item.id] ? '在线' : '离线'}}</view>
+      </view>
       <view class="meta">{{item.baseUrl}}</view>
-      <view class="meta">保存文件夹：{{item.targetFolder}}</view>
-      <view wx:if="{{item.id === currentDeviceId}}" class="current-badge">当前电脑</view>
+      <view class="meta">默认文件夹：{{item.targetFolder || '/'}}</view>
     </view>
   </view>
 </view>
