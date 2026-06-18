@@ -14,5 +14,6 @@
     <view wx:if="{{normalizedBaseUrl}}" class="meta">地址：{{normalizedBaseUrl}}</view>
     <view wx:if="{{dataDir}}" class="meta">资料目录：{{dataDir}}</view>
     <view wx:if="{{error}}" class="error">{{error}}</view>
+    <view wx:if="{{online}}" class="hint">连接成功后可切换到“上传”或“资料”。</view>
   </view>
 </view>

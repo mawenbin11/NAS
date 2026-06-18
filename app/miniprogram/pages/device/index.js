@@ -34,6 +34,9 @@ Page({
         dataDir: result.dataDir || "",
         error: result.error || "",
       });
+      if (result.online) {
+        wx.setStorageSync("agentBaseUrl", baseUrl);
+      }
     });
   },
 });

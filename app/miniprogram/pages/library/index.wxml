@@ -1,0 +1,20 @@
+<view class="page">
+  <view class="toolbar">
+    <view class="title">资料库</view>
+    <button class="refresh-button" loading="{{loading}}" bindtap="loadMedia">刷新</button>
+  </view>
+
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <view wx:if="{{!loading && items.length === 0}}" class="empty">暂无资料</view>
+
+  <view class="list">
+    <view wx:for="{{items}}" wx:key="id" class="item">
+      <view class="item-main">
+        <view class="item-name">{{item.originalName}}</view>
+        <view class="item-meta">{{item.fileType}} · {{item.size}} bytes</view>
+        <view class="item-path">{{item.relativePath}}</view>
+      </view>
+      <view class="item-time">{{item.uploadedAt}}</view>
+    </view>
+  </view>
+</view>

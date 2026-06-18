@@ -85,3 +85,9 @@
   font-size: 24rpx;
   word-break: break-all;
 }
+
+.hint {
+  margin-top: 18rpx;
+  color: #1677ff;
+  font-size: 24rpx;
+}

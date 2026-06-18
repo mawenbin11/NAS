@@ -1,0 +1,10 @@
+<view class="page">
+  <view class="section">
+    <view class="title">上传照片/视频</view>
+    <view class="subtitle">文件将保存到已连接电脑的 MiniNAS data 目录。</view>
+    <view class="meta">电脑地址：{{agentBaseUrl || '未连接'}}</view>
+    <button class="primary-button" loading="{{uploading}}" bindtap="onChooseAndUpload">选择并上传</button>
+    <view wx:if="{{message}}" class="message">{{message}}</view>
+    <view wx:if="{{error}}" class="error">{{error}}</view>
+  </view>
+</view>
